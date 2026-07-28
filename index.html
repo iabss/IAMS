@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audit Management System (AMS) Pro</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             theme: {
@@ -31,6 +29,7 @@
             }
         }
     </script>
+    
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -41,7 +40,6 @@
 </head>
 <body class="text-slate-800 flex h-screen overflow-hidden bg-slate-100">
 
-    <!-- SIDEBAR NAVIGATION -->
     <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shrink-0 shadow-xl z-20">
         <div>
             <!-- Logo Header -->
@@ -93,7 +91,6 @@
         </div>
     </aside>
 
-    <!-- MAIN CONTENT CONTAINER -->
     <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50">
         
         <!-- TOP NAVBAR HEADER -->
@@ -116,7 +113,6 @@
         <!-- VIEW CONTAINER -->
         <div class="flex-1 overflow-y-auto p-6 custom-scrollbar" id="content-container">
 
-            <!-- 1. DASHBOARD & PROJECT LIST VIEW -->
             <div id="view-dashboard" class="space-y-6">
                 <!-- KPI Stat Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -171,12 +167,11 @@
                     </div>
 
                     <div class="divide-y divide-slate-100" id="project-list-container">
-                        <!-- Dynamic content -->
+                        <!-- Dynamic project list -->
                     </div>
                 </div>
             </div>
 
-            <!-- 2. PROJECT WORKSPACE DETAIL VIEW -->
             <div id="view-project-detail" class="space-y-6 hidden">
                 <!-- Back Header -->
                 <div class="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
@@ -315,7 +310,6 @@
                 </div>
             </div>
 
-            <!-- 3. MASTER DATA TIM AUDIT VIEW -->
             <div id="view-master-team" class="space-y-6 hidden">
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
                     <div>
@@ -352,7 +346,6 @@
                 </div>
             </div>
 
-            <!-- 4. TRIGGER EMAIL H-1 VIEW -->
             <div id="view-email-triggers" class="space-y-6 hidden">
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
                     <div>
@@ -369,7 +362,6 @@
                 </div>
             </div>
 
-            <!-- 5. GOOGLE DRIVE SYNC VIEW -->
             <div id="view-drive-sync" class="space-y-6 hidden">
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2">
                     <div class="flex items-center justify-between">
@@ -391,7 +383,6 @@
         </div>
     </main>
 
-    <!-- MODAL BUAT PROJECT AUDIT BARU -->
     <div id="modal-new-audit" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
             <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
@@ -478,7 +469,6 @@
         </div>
     </div>
 
-    <!-- MODAL TAMBAH / EDIT AUDITOR -->
     <div id="modal-add-auditor" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
             <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
@@ -491,15 +481,15 @@
                 <input type="hidden" id="auditor-original-nik" value="">
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">NIK <span class="text-rose-500">*</span></label>
-                    <input type="text" id="auditor-nik" required placeholder="misal: 9920105" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                    <input type="text" id="auditor-nik" required placeholder="misal: 1013751" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Nama Lengkap <span class="text-rose-500">*</span></label>
-                    <input type="text" id="auditor-name" required placeholder="misal: Budi Pratama, S.E." class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                    <input type="text" id="auditor-name" required placeholder="misal: Farhan Zulfikar F" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Email Penugasan <span class="text-rose-500">*</span></label>
-                    <input type="email" id="auditor-email" required placeholder="budi.pratama@company.com" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                    <input type="email" id="auditor-email" required placeholder="farhan_zulfikar@binasaranasukses.com" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -518,7 +508,7 @@
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">No. WhatsApp/Telp</label>
-                    <input type="text" id="auditor-phone" placeholder="081234567890" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                    <input type="text" id="auditor-phone" placeholder="087840002065" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
                 </div>
                 <div class="pt-3 border-t border-slate-200 flex items-center justify-end space-x-2">
                     <button type="button" onclick="closeModal('modal-add-auditor')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 font-medium">Batal</button>
@@ -528,7 +518,6 @@
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION -->
     <div id="toast-notification" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 transition-all duration-300 transform translate-y-20 opacity-0 z-50 text-xs font-medium border border-slate-700">
         <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
         <span id="toast-message">Notifikasi</span>
@@ -540,7 +529,6 @@
             driveParentFolderId: '1RT3NyrAcsBhj5mBxZmdWy9J6j_ZNVVWU',
             driveRootUrl: 'https://drive.google.com/drive/folders/1RT3NyrAcsBhj5mBxZmdWy9J6j_ZNVVWU',
             spreadsheetId: '1CwHJ2MF2zeNt8eUwsLUvYUMUqnnty3teD7d4jdff-ZA',
-            // EMBEDDED REAL-TIME WEB APP EXEC URL
             scriptUrl: 'https://script.google.com/macros/s/AKfycbzFDgx2QXrWmwGxmnKDrchBkhfm4VmaRgl1bGE5SubdsDAJ5r7K07ke-oRv4FQnRKcIKg/exec'
         };
 
@@ -572,7 +560,7 @@
             { id: 'act_22', phase: 'Reporting', name: 'Seluruh Dokumen Audit Disimpan dalam Server Bersama', weight: 2 }
         ];
 
-        // FALLBACK SCOPE OPTIONS
+        // SCOPE OPTIONS
         let JOBSITE_OPTIONS = [
             'Site Adaro - Kalimantan Selatan',
             'Site Tabang - Kalimantan Timur',
@@ -590,9 +578,9 @@
             'Mining Operations & Production'
         ];
 
-        // APP STATE
-        let projects = [];
-        let masterTeam = [];
+        // APP STATE WITH LOCAL STORAGE PERSISTENCE
+        let projects = JSON.parse(localStorage.getItem('ams_projects') || '[]');
+        let masterTeam = JSON.parse(localStorage.getItem('ams_master_team') || '[]');
         let emailLogs = [];
         let activeProjectId = null;
 
@@ -615,6 +603,7 @@
                             dept: String(r[4] || 'Internal Audit'),
                             phone: String(r[5] || '-')
                         }));
+                        localStorage.setItem('ams_master_team', JSON.stringify(masterTeam));
                     }
 
                     // Parse Scope Options from Master_sitedept
@@ -635,7 +624,6 @@
                         data.projects.slice(1).forEach(r => {
                             if (r[0]) {
                                 const pId = String(r[0]);
-                                // Filter tasks
                                 let pTasks = [];
                                 if (data.tasks && data.tasks.length > 1) {
                                     pTasks = data.tasks.slice(1).filter(t => String(t[0]) === pId).map(t => ({
@@ -678,13 +666,14 @@
                             }
                         });
                         projects = parsedProjects;
+                        localStorage.setItem('ams_projects', JSON.stringify(projects));
                     }
 
                     showToast('Berhasil sinkronisasi data dari Google Spreadsheet!', 'success');
                 }
             } catch (err) {
-                console.warn("Spreadsheet Load Warning:", err);
-                showToast('Terhubung ke Google Apps Script (Ready for Operations)', 'info');
+                console.warn("Spreadsheet Sync Warning:", err);
+                showToast('Memuat data dari Cache Terimpan', 'info');
             } finally {
                 if (btn) btn.innerHTML = `<i class="fa-solid fa-rotate text-xs"></i><span>Sync / Refresh Data</span>`;
                 renderMasterTeamTable();
@@ -866,6 +855,7 @@
             if (!task) return;
 
             task.status = newStatus;
+            localStorage.setItem('ams_projects', JSON.stringify(projects));
             renderProjectWorkspace(projId);
 
             fetch(GOOGLE_CONFIG.scriptUrl, {
@@ -1005,6 +995,8 @@
             };
 
             projects.push(newProj);
+            localStorage.setItem('ams_projects', JSON.stringify(projects));
+            
             submitBtn.disabled = false;
             submitBtn.innerHTML = `<span>Generate Project & Drive Folder</span>`;
 
@@ -1112,6 +1104,7 @@
                 masterTeam.push({ nik, name, email, role, dept, phone });
             }
 
+            localStorage.setItem('ams_master_team', JSON.stringify(masterTeam));
             saveBtn.disabled = false;
             saveBtn.innerText = 'Simpan Data Auditor';
 
@@ -1122,6 +1115,7 @@
         async function deleteAuditor(nik) {
             const auditor = masterTeam.find(m => m.nik === nik);
             masterTeam = masterTeam.filter(m => m.nik !== nik);
+            localStorage.setItem('ams_master_team', JSON.stringify(masterTeam));
 
             try {
                 await fetch(GOOGLE_CONFIG.scriptUrl, {
