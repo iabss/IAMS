@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Management System (AMS) Pro</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="text-slate-800 flex h-screen overflow-hidden bg-slate-100">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shrink-0 shadow-xl z-20">
+        <div>
+            <!-- Logo Header -->
+            <div class="p-5 border-b border-slate-800 flex items-center space-x-3">
+                <div class="bg-brand-500 text-white p-2.5 rounded-xl shadow-lg shadow-brand-500/30">
+                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-white text-lg tracking-wide leading-none">AMS Web</h1>
+                    <span class="text-[11px] text-slate-400 font-medium">Audit Management Pro</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="p-4 space-y-1.5 text-sm font-medium">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg bg-brand-600 text-white transition-all shadow-sm">
+                    <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                    <span>Dashboard & Proyek</span>
+                </button>
+                <button onclick="switchTab('master-team')" id="nav-master-team" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-all text-slate-400">
+                    <i class="fa-solid fa-users-gear w-5 text-center"></i>
+                    <span>Master Tim Audit</span>
+                </button>
+                <button onclick="switchTab('email-triggers')" id="nav-email-triggers" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-all text-slate-400 relative">
+                    <i class="fa-solid fa-envelope-circle-check w-5 text-center"></i>
+                    <span>Trigger Email H-1</span>
+                    <span id="badge-email-count" class="ml-auto bg-amber-500 text-slate-900 font-bold text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+                <button onclick="switchTab('drive-sync')" id="nav-drive-sync" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-all text-slate-400">
+                    <i class="fa-brands fa-google-drive w-5 text-center"></i>
+                    <span>Google Drive Sync</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Sidebar Footer Status -->
+        <div class="p-4 border-t border-slate-800 text-xs">
+            <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700/50 space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400 font-medium">Drive Connected</span>
+                    <span id="script-status-badge" class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        Ready
+                    </span>
+                </div>
+                <p class="text-slate-400 text-[10px] font-mono truncate" title="1RT3NyrAcsBhj5mBxZmdWy9J6j_ZNVVWU">
+                    <i class="fa-brands fa-google-drive text-amber-400 mr-1"></i> ID: 1RT3Nyr...VWU
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50">
+        
+        <!-- TOP NAVBAR HEADER -->
+        <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 shrink-0 shadow-sm z-10">
+            <div class="flex items-center space-x-4">
+                <h2 id="page-title" class="text-xl font-bold text-slate-800 tracking-tight">Dashboard Audit & Proyek</h2>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button onclick="openNewAuditModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition-all shadow-md shadow-brand-500/20 flex items-center space-x-2">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>Buat Task Project Audit</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- VIEW CONTAINER -->
+        <div class="flex-1 overflow-y-auto p-6 custom-scrollbar" id="content-container">
+
+            <!-- BANNER CONFIGURATION FOR GOOGLE APPS SCRIPT -->
+            <div class="mb-6 bg-gradient-to-r from-slate-900 via-slate-800 to-brand-900 text-white p-4 rounded-xl shadow-md border border-slate-700 space-y-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-plug-circle-check text-emerald-400 text-lg"></i>
+                        <h4 class="font-bold text-sm">Hubungkan Web App URL Google Apps Script</h4>
+                    </div>
+                    <span class="text-[11px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 font-semibold">Real-Time Sync Active</span>
+                </div>
+                <p class="text-xs text-slate-300">
+                    Masukkan **URL Web App Google Apps Script** Anda di bawah ini agar penambahan auditor langsung menambah baris di <b>Master_Karyawan</b> dan penambahan proyek otomatis membuat folder fisik di <b>Google Drive</b> & tercatat di sheet <b>Database_project</b>:
+                </p>
+                <div class="flex items-center space-x-2">
+                    <input type="url" id="input-script-url" placeholder="https://script.google.com/macros/s/AKfycbx.../exec" class="flex-1 px-3 py-1.5 bg-slate-800 text-white border border-slate-600 rounded-lg text-xs outline-none focus:border-brand-400 font-mono">
+                    <button onclick="saveScriptUrl()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-1.5 rounded-lg transition shadow">
+                        Simpan Koneksi
+                    </button>
+                </div>
+            </div>
+
+            <!-- 1. DASHBOARD & PROJECT LIST VIEW -->
+            <div id="view-dashboard" class="space-y-6">
+                <!-- KPI Stat Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Total Project Audit</p>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-1" id="stat-total-projects">0</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Proyek Berjalan</p>
+                            <h3 class="text-2xl font-bold text-amber-600 mt-1" id="stat-running-projects">0</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-spinner animate-spin"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Proyek Selesai</p>
+                            <h3 class="text-2xl font-bold text-emerald-600 mt-1" id="stat-completed-projects">0</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Warning Task H-1</p>
+                            <h3 class="text-2xl font-bold text-rose-600 mt-1" id="stat-h1-warning">0</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT LIST SECTION -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-800">Daftar Project Audit</h3>
+                            <p class="text-xs text-slate-500">Klik "Buat Task Project Audit" untuk mulai menginput data baru.</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="text" id="search-project" oninput="renderProjectList()" placeholder="Cari Nama / ID Audit..." class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs w-60 focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="divide-y divide-slate-100" id="project-list-container">
+                        <!-- Dynamic content filled by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. PROJECT WORKSPACE DETAIL VIEW (PHASES & ACTIVITIES) -->
+            <div id="view-project-detail" class="space-y-6 hidden">
+                <!-- Back Header -->
+                <div class="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="switchTab('dashboard')" class="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 text-xs font-semibold flex items-center space-x-2">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span>Kembali ke List</span>
+                        </button>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded text-xs font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200" id="detail-audit-id">AUD-2026-001</span>
+                                <span class="px-2 py-0.5 rounded text-xs font-semibold bg-brand-50 text-brand-700 border border-brand-200" id="detail-audit-type">Operasional</span>
+                                <span class="px-2 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-600" id="detail-audit-scope">Jobsite</span>
+                            </div>
+                            <h2 class="text-lg font-bold text-slate-800 mt-1" id="detail-audit-name">Audit Nama</h2>
+                            <p class="text-xs text-slate-500 mt-0.5" id="detail-audit-objective">Objective text...</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="openDriveLinkForCurrentProject()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium px-3.5 py-2 rounded-lg flex items-center space-x-2 shadow-sm transition">
+                            <i class="fa-brands fa-google-drive"></i>
+                            <span>Buka Folder Drive Audit</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Header Banner -->
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-6">
+                    <div class="space-y-1">
+                        <span class="text-xs text-slate-400 font-semibold tracking-wider uppercase">Progres Total Pembobotan Audit</span>
+                        <div class="flex items-baseline space-x-3">
+                            <span class="text-3xl font-extrabold text-brand-400" id="detail-progress-percent">0%</span>
+                            <span class="text-xs text-slate-300">(Total Bobot Terakumulasi dari 22 Task)</span>
+                        </div>
+                        <div class="w-72 sm:w-96 bg-slate-700/80 rounded-full h-3 overflow-hidden mt-2 border border-slate-600">
+                            <div class="bg-gradient-to-r from-brand-500 to-emerald-400 h-full rounded-full transition-all duration-500" id="detail-progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 text-xs">
+                        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700/60">
+                            <span class="text-slate-400 block mb-0.5">Tanggal Pelaksanaan</span>
+                            <span class="font-semibold text-slate-200" id="detail-audit-dates">-</span>
+                        </div>
+                        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700/60">
+                            <span class="text-slate-400 block mb-0.5">PIC Lead Auditor</span>
+                            <span class="font-semibold text-slate-200" id="detail-lead-pic">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 PHASE SUBLISTS -->
+                <div class="space-y-4">
+                    <!-- PHASE 1: PRE-PLANNING -->
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">P1</div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-sm">Phase: Pre-Planning</h3>
+                                    <span class="text-xs text-slate-500">Persiapan, SPA, & Finalisasi Checklist (Total Bobot Phase: 25%)</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-semibold px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg border border-blue-200" id="p1-progress-badge">0 / 25% Closed</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-50/50 text-slate-500 border-b border-slate-200 font-semibold">
+                                        <th class="p-3 w-32 text-center">Status</th>
+                                        <th class="p-3">Nama Aktivitas / Task</th>
+                                        <th class="p-3 w-24 text-center">Bobot</th>
+                                        <th class="p-3 w-48">PIC Penanggung Jawab</th>
+                                        <th class="p-3 w-32">Due Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="p1-activities-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- PHASE 2: FIELD WORK -->
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs">P2</div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-sm">Phase: Field Work</h3>
+                                    <span class="text-xs text-slate-500">Opening, Fieldwork, Working Papers, & Closing Meeting (Total Bobot Phase: 54%)</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-50 text-amber-700 rounded-lg border border-amber-200" id="p2-progress-badge">0 / 54% Closed</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-50/50 text-slate-500 border-b border-slate-200 font-semibold">
+                                        <th class="p-3 w-32 text-center">Status</th>
+                                        <th class="p-3">Nama Aktivitas / Task</th>
+                                        <th class="p-3 w-24 text-center">Bobot</th>
+                                        <th class="p-3 w-48">PIC Penanggung Jawab</th>
+                                        <th class="p-3 w-32">Due Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="p2-activities-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- PHASE 3: REPORTING -->
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">P3</div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-sm">Phase: Reporting</h3>
+                                    <span class="text-xs text-slate-500">Perhitungan Risk, AFS, Penerbitan Report, & Archiving (Total Bobot Phase: 21%)</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-200" id="p3-progress-badge">0 / 21% Closed</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-50/50 text-slate-500 border-b border-slate-200 font-semibold">
+                                        <th class="p-3 w-32 text-center">Status</th>
+                                        <th class="p-3">Nama Aktivitas / Task</th>
+                                        <th class="p-3 w-24 text-center">Bobot</th>
+                                        <th class="p-3 w-48">PIC Penanggung Jawab</th>
+                                        <th class="p-3 w-32">Due Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="p3-activities-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. MASTER DATA TIM AUDIT VIEW -->
+            <div id="view-master-team" class="space-y-6 hidden">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h3 class="text-base font-bold text-slate-800">Master Data Tim Audit</h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">Sheet: Master_Karyawan</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">Daftar auditor terhubung langsung ke Google Spreadsheet ID: <code class="font-mono bg-slate-100 px-1 rounded text-slate-700">1CwHJ2MF2zeNt8eUwsLUvYUMUqnnty3teD7d4jdff-ZA</code></p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="openAddAuditorModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-medium px-4 py-2 rounded-lg flex items-center space-x-2 shadow-sm">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span>Tambah Auditor Baru</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table Auditor -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+                                <th class="p-3.5">NIK</th>
+                                <th class="p-3.5">Nama Lengkap</th>
+                                <th class="p-3.5">Email Penugasan</th>
+                                <th class="p-3.5">Jabatan / Role</th>
+                                <th class="p-3.5">Departemen</th>
+                                <th class="p-3.5">No. Telp</th>
+                                <th class="p-3.5 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="master-team-table-body" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 4. TRIGGER EMAIL H-1 VIEW -->
+            <div id="view-email-triggers" class="space-y-6 hidden">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">Trigger Email Otomatis (Due Date H-1)</h3>
+                        <p class="text-xs text-slate-500">Log pemicu email otomatis ke PIC jika due date task tinggal 1 hari lagi.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50 text-xs font-bold text-slate-700">
+                        Log Pengiriman Email Reminder Task
+                    </div>
+                    <div class="divide-y divide-slate-100" id="email-log-container"></div>
+                </div>
+            </div>
+
+            <!-- 5. GOOGLE DRIVE SYNC VIEW -->
+            <div id="view-drive-sync" class="space-y-6 hidden">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-bold text-slate-800">Google Drive Integration Status</h3>
+                        <a href="https://drive.google.com/drive/folders/1RT3NyrAcsBhj5mBxZmdWy9J6j_ZNVVWU" target="_blank" class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-300 font-semibold px-3 py-1.5 rounded-lg flex items-center space-x-1.5 hover:bg-emerald-100 transition">
+                            <i class="fa-brands fa-google-drive text-amber-500"></i>
+                            <span>Buka Folder Utama Drive</span>
+                            <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+                    <p class="text-xs text-slate-500">
+                        Target Folder Parent ID: <code class="font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-800">1RT3NyrAcsBhj5mBxZmdWy9J6j_ZNVVWU</code>.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="drive-project-list"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL BUAT PROJECT AUDIT BARU -->
+    <div id="modal-new-audit" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
+            <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-base">Buat Task Project Audit Baru</h3>
+                    <p class="text-xs text-slate-400">Project baru akan membuat folder otomatis di Google Drive & tercatat di sheet Database_project.</p>
+                </div>
+                <button onclick="closeModal('modal-new-audit')" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="form-new-audit" onsubmit="handleCreateProject(event)" class="p-6 overflow-y-auto space-y-4 custom-scrollbar text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Audit ID (Auto)</label>
+                        <input type="text" id="input-audit-id" readonly class="w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-lg font-mono font-bold text-slate-600 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Audit Type <span class="text-rose-500">*</span></label>
+                        <select id="input-audit-type" required class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-500">
+                            <option value="Audit Operasional">Audit Operasional</option>
+                            <option value="Audit Keuangan & Kepatuhan">Audit Keuangan & Kepatuhan</option>
+                            <option value="Audit Sistem Manajemen ISO 9001">Audit Sistem Manajemen ISO 9001</option>
+                            <option value="Audit K3 & Lingkungan (HSE)">Audit K3 & Lingkungan (HSE)</option>
+                            <option value="Audit TI & Keamanan Siber">Audit TI & Keamanan Siber</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Audit Name <span class="text-rose-500">*</span></label>
+                    <input type="text" id="input-audit-name" required placeholder="misal: Audit Operasional Area Tambang Q3" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Audit Objective <span class="text-rose-500">*</span></label>
+                    <textarea id="input-audit-objective" rows="2" required placeholder="Tujuan pelaksanaan audit dan ruang lingkup..." class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                </div>
+
+                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-3">
+                    <label class="block font-semibold text-slate-800">Pilih Lingkup Audit (Scope) <span class="text-rose-500">*</span></label>
+                    <div class="flex items-center space-x-6">
+                        <label class="flex items-center space-x-2 cursor-pointer font-medium text-slate-700">
+                            <input type="radio" name="scope_type" value="jobsite" checked onchange="toggleScopeSelector()" class="text-brand-600 focus:ring-brand-500">
+                            <span>Jobsite Lapangan</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer font-medium text-slate-700">
+                            <input type="radio" name="scope_type" value="department" onchange="toggleScopeSelector()" class="text-brand-600 focus:ring-brand-500">
+                            <span>Departemen Organisasi</span>
+                        </label>
+                    </div>
+                    <div id="scope-select-container"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Planned Start Date <span class="text-rose-500">*</span></label>
+                        <input type="date" id="input-start-date" required class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Planned Finish Date <span class="text-rose-500">*</span></label>
+                        <input type="date" id="input-finish-date" required class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">PIC Lead Auditor <span class="text-rose-500">*</span></label>
+                    <select id="input-lead-pic" required class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none"></select>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">PIC Anggota Tim Audit</label>
+                    <div id="members-checkbox-container" class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-lg border border-slate-200 max-h-32 overflow-y-auto"></div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-200 flex items-center justify-end space-x-2">
+                    <button type="button" onclick="closeModal('modal-new-audit')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 font-medium hover:bg-slate-100">Batal</button>
+                    <button type="submit" id="btn-submit-project" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg shadow-md shadow-brand-500/20 flex items-center space-x-2">
+                        <span>Generate Project & Drive Folder</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH / EDIT AUDITOR -->
+    <div id="modal-add-auditor" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
+            <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
+                <h3 class="font-bold text-base" id="modal-auditor-title">Tambah Master Auditor Baru</h3>
+                <button onclick="closeModal('modal-add-auditor')" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form id="form-add-auditor" onsubmit="handleSaveAuditor(event)" class="p-5 space-y-3.5 text-xs">
+                <input type="hidden" id="auditor-original-nik" value="">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">NIK <span class="text-rose-500">*</span></label>
+                    <input type="text" id="auditor-nik" required placeholder="misal: 9920105" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Nama Lengkap <span class="text-rose-500">*</span></label>
+                    <input type="text" id="auditor-name" required placeholder="misal: Budi Pratama, S.E." class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Email Penugasan <span class="text-rose-500">*</span></label>
+                    <input type="email" id="auditor-email" required placeholder="budi.pratama@company.com" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Role/Jabatan</label>
+                        <select id="auditor-role" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                            <option value="Lead Auditor">Lead Auditor</option>
+                            <option value="Senior Auditor">Senior Auditor</option>
+                            <option value="Junior Auditor">Junior Auditor</option>
+                            <option value="Technical Specialist">Technical Specialist</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Departemen</label>
+                        <input type="text" id="auditor-dept" placeholder="Internal Audit" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">No. WhatsApp/Telp</label>
+                    <input type="text" id="auditor-phone" placeholder="081234567890" class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none">
+                </div>
+                <div class="pt-3 border-t border-slate-200 flex items-center justify-end space-x-2">
+                    <button type="button" onclick="closeModal('modal-add-auditor')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 font-medium">Batal</button>
+                    <button type="submit" id="btn-save-auditor" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg shadow-md">Simpan Data Auditor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast-notification" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 transition-all duration-300 transform translate-y-20 opacity-0 z-50 text-xs font-medium border border-slate-700">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toast-message">Notifikasi</span>
+    </div>
+
+    <script>
+        // GOOGLE INTEGRATION CONFIG
+        const GOOGLE_CONFIG = {
+            driveParentFolderId: '1RT3NyrAcsBhj5mBxZmdWy9J6j_ZNVVWU',
+            driveRootUrl: 'https://drive.google.com/drive/folders/1RT3NyrAcsBhj5mBxZmdWy9J6j_ZNVVWU',
+            spreadsheetId: '1CwHJ2MF2zeNt8eUwsLUvYUMUqnnty3teD7d4jdff-ZA'
+        };
+
+        // MASTER ACTIVITIES (22 TASKS & WEIGHTS)
+        const MASTER_PHASE_ACTIVITIES = [
+            { id: 'act_1', phase: 'Pre-Planning', name: 'Pembuatan & Pengiriman SPA', weight: 5 },
+            { id: 'act_2', phase: 'Pre-Planning', name: 'Finalisasi Audit Program', weight: 3 },
+            { id: 'act_3', phase: 'Pre-Planning', name: 'Data Collection & Desk Audit', weight: 10 },
+            { id: 'act_4', phase: 'Pre-Planning', name: 'Presentasi Hasil Desk Audit', weight: 4 },
+            { id: 'act_5', phase: 'Pre-Planning', name: 'Finalisasi Audit Checklist', weight: 3 },
+
+            { id: 'act_6', phase: 'Field Work', name: 'Opening Meeting Audit Presentation', weight: 3 },
+            { id: 'act_7', phase: 'Field Work', name: 'Proses Fieldwork dan Pengisian Audit Checklist', weight: 15 },
+            { id: 'act_8', phase: 'Field Work', name: 'Proses Audit dengan Bukti Kertas Kerja / Working Paper per Item Audit Checklist', weight: 15 },
+            { id: 'act_9', phase: 'Field Work', name: 'Proses Review dengan TL (Audit Checklist, WP, Finding)', weight: 5 },
+            { id: 'act_10', phase: 'Field Work', name: 'Proses Drafting Finding', weight: 5 },
+            { id: 'act_11', phase: 'Field Work', name: 'Preclosing dengan Auditee', weight: 3 },
+            { id: 'act_12', phase: 'Field Work', name: 'Closing Meeting', weight: 3 },
+            { id: 'act_13', phase: 'Field Work', name: 'Gathering Auditee Management Respond', weight: 3 },
+            { id: 'act_14', phase: 'Field Work', name: 'Collect & Evaluate Auditee Satisfaction Index', weight: 1 },
+            { id: 'act_15', phase: 'Field Work', name: 'Collect & Evaluate Customer Satisfaction Index', weight: 1 },
+
+            { id: 'act_16', phase: 'Reporting', name: 'Proses Review Finding Kabag/Kadept', weight: 3 },
+            { id: 'act_17', phase: 'Reporting', name: 'Proses Perhitungan OVR (Risk) dan Maturity Level', weight: 3 },
+            { id: 'act_18', phase: 'Reporting', name: 'Proses Reporting (Drafting, Review Kasi, dan Kabag/Kadept)', weight: 5 },
+            { id: 'act_19', phase: 'Reporting', name: 'Presentasi Hasil Audit ke Kadept Fungsional di HO dan/atau BOD', weight: 3 },
+            { id: 'act_20', phase: 'Reporting', name: 'Pengisian Audit Finding Statement (AFS)', weight: 2 },
+            { id: 'act_21', phase: 'Reporting', name: 'Penerbitan dan Distribusi Report', weight: 3 },
+            { id: 'act_22', phase: 'Reporting', name: 'Seluruh Dokumen Audit Disimpan dalam Server Bersama', weight: 2 }
+        ];
+
+        // SCOPE OPTIONS FROM Master_sitedept SHEET
+        const JOBSITE_OPTIONS = [
+            'Site Adaro - Kalimantan Selatan',
+            'Site Tabang - Kalimantan Timur',
+            'Site Halmahera - Maluku Utara',
+            'Site Weda Bay - Halmahera',
+            'Site Batu Hijau - NTB'
+        ];
+
+        const DEPARTMENT_OPTIONS = [
+            'Finance & Accounting Department',
+            'Human Capital & General Affair',
+            'Supply Chain Management (SCM)',
+            'Health Safety & Environment (HSE)',
+            'Information Technology (IT)',
+            'Mining Operations & Production'
+        ];
+
+        // APP STATE
+        let projects = [];
+        let masterTeam = [];
+        let emailLogs = [];
+        let activeProjectId = null;
+        let scriptUrl = localStorage.getItem('ams_script_url') || '';
+
+        function initScriptUrlInput() {
+            const input = document.getElementById('input-script-url');
+            if (input && scriptUrl) {
+                input.value = scriptUrl;
+            }
+        }
+
+        function saveScriptUrl() {
+            const val = document.getElementById('input-script-url')?.value.trim();
+            if (!val) {
+                showToast('Masukkan URL Apps Script Web App terlebih dahulu!', 'error');
+                return;
+            }
+            scriptUrl = val;
+            localStorage.setItem('ams_script_url', scriptUrl);
+            showToast('URL Google Apps Script berhasil disimpan & terhubung!', 'success');
+        }
+
+        // TAB SWITCHING
+        function switchTab(tabId) {
+            const views = ['dashboard', 'project-detail', 'master-team', 'email-triggers', 'drive-sync'];
+            views.forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                if (el) {
+                    if (v === tabId) el.classList.remove('hidden');
+                    else el.classList.add('hidden');
+                }
+
+                const navBtn = document.getElementById(`nav-${v}`);
+                if (navBtn) {
+                    if (v === tabId) navBtn.className = "w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg bg-brand-600 text-white transition-all shadow-sm";
+                    else navBtn.className = "w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-all text-slate-400";
+                }
+            });
+
+            if (tabId === 'dashboard') {
+                renderProjectList();
+                updateDashboardKPIs();
+            } else if (tabId === 'master-team') {
+                renderMasterTeamTable();
+            } else if (tabId === 'drive-sync') {
+                renderDriveSyncView();
+            } else if (tabId === 'email-triggers') {
+                renderEmailLogs();
+            }
+        }
+
+        // RENDER PROJECT LIST
+        function renderProjectList() {
+            const container = document.getElementById('project-list-container');
+            if (!container) return;
+
+            const searchQuery = (document.getElementById('search-project')?.value || '').toLowerCase();
+            container.innerHTML = '';
+
+            const filtered = projects.filter(p => 
+                p.id.toLowerCase().includes(searchQuery) || 
+                p.name.toLowerCase().includes(searchQuery) ||
+                p.scopeValue.toLowerCase().includes(searchQuery)
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="p-12 text-center text-slate-400 text-xs">
+                        <i class="fa-solid fa-folder-plus text-4xl mb-3 text-slate-300"></i>
+                        <p class="font-bold text-slate-600 text-sm">Belum ada Project Audit</p>
+                        <p class="mt-1">Klik tombol <b>"Buat Task Project Audit"</b> di atas untuk menambahkan proyek pertama Anda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const totalWeight = p.tasks.reduce((sum, t) => sum + t.weight, 0);
+                const closedWeight = p.tasks.filter(t => t.status === 'Close').reduce((sum, t) => sum + t.weight, 0);
+                const percent = totalWeight > 0 ? Math.round((closedWeight / totalWeight) * 100) : 0;
+                const leadPic = masterTeam.find(m => m.nik === p.leadPicNik)?.name || p.leadPicNik;
+
+                container.innerHTML += `
+                    <div class="p-5 hover:bg-slate-50 transition cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4" onclick="openProjectDetail('${p.id}')">
+                        <div class="space-y-1.5 flex-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200">${p.id}</span>
+                                <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-brand-50 text-brand-700 border border-brand-200">${p.type}</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm hover:text-brand-600 transition">${p.name}</h4>
+                            <p class="text-xs text-slate-500"><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i>${p.scopeValue} | <i class="fa-solid fa-user-shield text-slate-400 mr-1"></i>Lead: ${leadPic}</p>
+                        </div>
+                        <div class="flex items-center space-x-6 min-w-[220px]">
+                            <div class="flex-1 space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-slate-500">Bobot Progres</span>
+                                    <span class="text-brand-600">${percent}%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                                    <div class="bg-brand-500 h-full rounded-full transition-all duration-300" style="width: ${percent}%"></div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // UPDATE KPI CARDS
+        function updateDashboardKPIs() {
+            document.getElementById('stat-total-projects').innerText = projects.length;
+            document.getElementById('stat-running-projects').innerText = projects.filter(p => p.tasks.some(t => t.status !== 'Close')).length;
+            document.getElementById('stat-completed-projects').innerText = projects.filter(p => p.tasks.every(t => t.status === 'Close')).length;
+        }
+
+        // OPEN PROJECT DETAIL
+        function openProjectDetail(projectId) {
+            activeProjectId = projectId;
+            switchTab('project-detail');
+            renderProjectWorkspace(projectId);
+        }
+
+        function renderProjectWorkspace(projectId) {
+            const proj = projects.find(p => p.id === projectId);
+            if (!proj) return;
+
+            document.getElementById('detail-audit-id').innerText = proj.id;
+            document.getElementById('detail-audit-type').innerText = proj.type;
+            document.getElementById('detail-audit-scope').innerText = `Lingkup: ${proj.scopeValue}`;
+            document.getElementById('detail-audit-name').innerText = proj.name;
+            document.getElementById('detail-audit-objective').innerText = proj.objective;
+            document.getElementById('detail-audit-dates').innerText = `${proj.startDate} s/d ${proj.finishDate}`;
+
+            const leadObj = masterTeam.find(m => m.nik === proj.leadPicNik);
+            document.getElementById('detail-lead-pic').innerText = leadObj ? `${leadObj.name} [NIK: ${leadObj.nik}]` : proj.leadPicNik;
+
+            const totalWeight = proj.tasks.reduce((sum, t) => sum + t.weight, 0);
+            const closedWeight = proj.tasks.filter(t => t.status === 'Close').reduce((sum, t) => sum + t.weight, 0);
+            const percent = totalWeight > 0 ? Math.round((closedWeight / totalWeight) * 100) : 0;
+
+            document.getElementById('detail-progress-percent').innerText = `${percent}%`;
+            document.getElementById('detail-progress-bar').style.width = `${percent}%`;
+
+            renderPhaseActivities(proj);
+        }
+
+        function renderPhaseActivities(proj) {
+            const phases = [
+                { name: 'Pre-Planning', bodyId: 'p1-activities-body', badgeId: 'p1-progress-badge', maxWeight: 25 },
+                { name: 'Field Work', bodyId: 'p2-activities-body', badgeId: 'p2-progress-badge', maxWeight: 54 },
+                { name: 'Reporting', bodyId: 'p3-activities-body', badgeId: 'p3-progress-badge', maxWeight: 21 }
+            ];
+
+            phases.forEach(phase => {
+                const bodyEl = document.getElementById(phase.bodyId);
+                const badgeEl = document.getElementById(phase.badgeId);
+                if (!bodyEl) return;
+
+                bodyEl.innerHTML = '';
+                const phaseTasks = proj.tasks.filter(t => t.phase === phase.name);
+                const phaseClosedWeight = phaseTasks.filter(t => t.status === 'Close').reduce((sum, t) => sum + t.weight, 0);
+
+                if (badgeEl) badgeEl.innerText = `${phaseClosedWeight} / ${phase.maxWeight}% Closed`;
+
+                phaseTasks.forEach(task => {
+                    const picObj = masterTeam.find(m => m.nik === task.picNik);
+                    const picName = picObj ? picObj.name : task.picNik;
+
+                    bodyEl.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-3 text-center">
+                                <select onchange="updateTaskStatus('${proj.id}', '${task.id}', this.value)" class="px-2 py-1 border rounded text-xs outline-none font-semibold ${
+                                    task.status === 'Close' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' :
+                                    task.status === 'In Progress' ? 'bg-amber-50 text-amber-700 border-amber-300' :
+                                    'bg-slate-50 text-slate-600 border-slate-300'
+                                }">
+                                    <option value="Open" ${task.status === 'Open' ? 'selected' : ''}>Open</option>
+                                    <option value="In Progress" ${task.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                    <option value="Close" ${task.status === 'Close' ? 'selected' : ''}>Close</option>
+                                </select>
+                            </td>
+                            <td class="p-3 font-semibold text-slate-800">${task.name}</td>
+                            <td class="p-3 text-center"><span class="px-2 py-0.5 rounded font-mono font-bold bg-slate-100 text-slate-700">${task.weight}%</span></td>
+                            <td class="p-3 font-medium text-slate-700"><i class="fa-solid fa-user-circle text-slate-400 mr-1.5"></i>${picName}</td>
+                            <td class="p-3 font-mono text-slate-600">${task.dueDate}</td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        function updateTaskStatus(projId, taskId, newStatus) {
+            const proj = projects.find(p => p.id === projId);
+            if (!proj) return;
+            const task = proj.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            task.status = newStatus;
+            renderProjectWorkspace(projId);
+
+            if (scriptUrl) {
+                fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'UPDATE_TASK_STATUS',
+                        auditId: projId,
+                        taskId: taskId,
+                        newStatus: newStatus
+                    })
+                }).catch(err => console.error("Update task err:", err));
+            }
+
+            showToast(`Status task "${task.name}" diperbarui ke ${newStatus}`, 'success');
+        }
+
+        // TOGGLE SCOPE SELECTOR
+        function toggleScopeSelector() {
+            const scopeType = document.querySelector('input[name="scope_type"]:checked')?.value || 'jobsite';
+            const container = document.getElementById('scope-select-container');
+            if (!container) return;
+
+            if (scopeType === 'jobsite') {
+                container.innerHTML = `
+                    <label class="block font-semibold text-slate-700 mb-1">Pilih Jobsite Lapangan <span class="text-rose-500">*</span></label>
+                    <select id="input-scope-target" required class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-500">
+                        ${JOBSITE_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                    </select>
+                `;
+            } else {
+                container.innerHTML = `
+                    <label class="block font-semibold text-slate-700 mb-1">Pilih Departemen Organisasi <span class="text-rose-500">*</span></label>
+                    <select id="input-scope-target" required class="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-500">
+                        ${DEPARTMENT_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                    </select>
+                `;
+            }
+        }
+
+        // OPEN NEW AUDIT MODAL
+        function openNewAuditModal() {
+            if (masterTeam.length === 0) {
+                showToast('Mohon isi minimal 1 anggota tim di Master Data Tim Audit terlebih dahulu!', 'error');
+                switchTab('master-team');
+                return;
+            }
+
+            const modal = document.getElementById('modal-new-audit');
+            const autoId = `AUD-2026-${String(projects.length + 1).padStart(3, '0')}`;
+            document.getElementById('form-new-audit').reset();
+            document.getElementById('input-audit-id').value = autoId;
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('input-start-date').value = today;
+            document.getElementById('input-finish-date').value = today;
+
+            // Populate Lead PIC Dropdown
+            document.getElementById('input-lead-pic').innerHTML = masterTeam.map(m => `<option value="${m.nik}">${m.name} (${m.role})</option>`).join('');
+
+            // Populate Members Checkboxes
+            document.getElementById('members-checkbox-container').innerHTML = masterTeam.map(m => `
+                <label class="flex items-center space-x-2 bg-white p-2 rounded border border-slate-200 cursor-pointer text-slate-700 hover:bg-slate-50">
+                    <input type="checkbox" name="audit_members" value="${m.nik}" class="rounded text-brand-600 focus:ring-brand-500">
+                    <span class="truncate">${m.name}</span>
+                </label>
+            `).join('');
+
+            toggleScopeSelector();
+            modal.classList.remove('hidden');
+        }
+
+        // CREATE PROJECT & TRIGGER DRIVE FOLDER API
+        async function handleCreateProject(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('btn-submit-project');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin mr-2"></i> Membuat Folder Drive & Database...`;
+
+            const auditId = document.getElementById('input-audit-id').value;
+            const auditName = document.getElementById('input-audit-name').value;
+            const auditObjective = document.getElementById('input-audit-objective').value;
+            const auditType = document.getElementById('input-audit-type').value;
+            const scopeType = document.querySelector('input[name="scope_type"]:checked').value;
+            const scopeValue = document.getElementById('input-scope-target').value;
+            const startDate = document.getElementById('input-start-date').value;
+            const finishDate = document.getElementById('input-finish-date').value;
+            const leadPicNik = document.getElementById('input-lead-pic').value;
+
+            const memberCheckboxes = document.querySelectorAll('input[name="audit_members"]:checked');
+            const memberNiks = Array.from(memberCheckboxes).map(cb => cb.value);
+
+            const newTasks = MASTER_PHASE_ACTIVITIES.map((act, idx) => ({
+                id: `${auditId}_${act.id}`,
+                phase: act.phase,
+                name: act.name,
+                weight: act.weight,
+                picNik: memberNiks.length > 0 ? memberNiks[idx % memberNiks.length] : leadPicNik,
+                dueDate: finishDate,
+                status: 'Open'
+            }));
+
+            // Google Drive Integration Call if Script URL present
+            if (scriptUrl) {
+                try {
+                    await fetch(scriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'CREATE_PROJECT_DRIVE',
+                            id: auditId,
+                            name: auditName,
+                            type: auditType,
+                            objective: auditObjective,
+                            scopeType: scopeType,
+                            scopeValue: scopeValue,
+                            startDate: startDate,
+                            finishDate: finishDate,
+                            leadPicNik: leadPicNik,
+                            memberNiks: memberNiks,
+                            tasks: newTasks
+                        })
+                    });
+                    showToast(`Proyek [${auditId}] & Folder Drive berhasil tersimpan di Database Spreadsheet!`, 'success');
+                } catch (err) {
+                    console.error("Drive Error:", err);
+                }
+            }
+
+            const newProj = {
+                id: auditId,
+                name: auditName,
+                objective: auditObjective,
+                type: auditType,
+                scopeType: scopeType,
+                scopeValue: scopeValue,
+                startDate: startDate,
+                finishDate: finishDate,
+                leadPicNik: leadPicNik,
+                memberNiks: memberNiks,
+                tasks: newTasks,
+                driveFolders: ['1. Pra audit', '2. Desk audit', '3. Field Audit', '4. Checklist audit', '5. Closing audit']
+            };
+
+            projects.push(newProj);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span>Generate Project & Drive Folder</span>`;
+
+            closeModal('modal-new-audit');
+            renderProjectList();
+            renderDriveSyncView();
+            openProjectDetail(auditId);
+        }
+
+        // RENDER MASTER TEAM TABLE
+        function renderMasterTeamTable() {
+            const body = document.getElementById('master-team-table-body');
+            if (!body) return;
+            body.innerHTML = '';
+
+            if (masterTeam.length === 0) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-400">
+                            <p class="font-bold">Belum Ada Data Master Auditor</p>
+                            <p class="text-xs">Klik "Tambah Auditor Baru" untuk mulai mengisi data sheet Master_Karyawan.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            masterTeam.forEach(m => {
+                body.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-3.5 font-mono font-bold text-slate-700">${m.nik}</td>
+                        <td class="p-3.5 font-semibold text-slate-800">${m.name}</td>
+                        <td class="p-3.5 text-brand-600 font-medium">${m.email}</td>
+                        <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">${m.role}</span></td>
+                        <td class="p-3.5 text-slate-600">${m.dept}</td>
+                        <td class="p-3.5 text-slate-600">${m.phone}</td>
+                        <td class="p-3.5 text-center space-x-2">
+                            <button onclick="openEditAuditorModal('${m.nik}')" class="text-brand-600 hover:text-brand-800 font-semibold text-xs">
+                                <i class="fa-solid fa-pen-to-square mr-1"></i>Edit
+                            </button>
+                            <button onclick="deleteAuditor('${m.nik}')" class="text-rose-500 hover:text-rose-700 font-semibold text-xs">
+                                <i class="fa-solid fa-trash mr-1"></i>Hapus
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openAddAuditorModal() {
+            document.getElementById('modal-auditor-title').innerText = 'Tambah Master Auditor Baru';
+            document.getElementById('auditor-original-nik').value = '';
+            document.getElementById('form-add-auditor').reset();
+            document.getElementById('modal-add-auditor').classList.remove('hidden');
+        }
+
+        function openEditAuditorModal(nik) {
+            const auditor = masterTeam.find(m => m.nik === nik);
+            if (!auditor) return;
+
+            document.getElementById('modal-auditor-title').innerText = 'Edit Data Master Auditor';
+            document.getElementById('auditor-original-nik').value = auditor.nik;
+            document.getElementById('auditor-nik').value = auditor.nik;
+            document.getElementById('auditor-name').value = auditor.name;
+            document.getElementById('auditor-email').value = auditor.email;
+            document.getElementById('auditor-role').value = auditor.role;
+            document.getElementById('auditor-dept').value = auditor.dept;
+            document.getElementById('auditor-phone').value = auditor.phone;
+
+            document.getElementById('modal-add-auditor').classList.remove('hidden');
+        }
+
+        // SAVE AUDITOR & SYNC TO SPREADSHEET
+        async function handleSaveAuditor(e) {
+            e.preventDefault();
+
+            const saveBtn = document.getElementById('btn-save-auditor');
+            saveBtn.disabled = true;
+            saveBtn.innerText = 'Menyimpan & Sync Sheet...';
+
+            const originalNik = document.getElementById('auditor-original-nik').value;
+            const nik = document.getElementById('auditor-nik').value.trim();
+            const name = document.getElementById('auditor-name').value.trim();
+            const email = document.getElementById('auditor-email').value.trim();
+            const role = document.getElementById('auditor-role').value;
+            const dept = document.getElementById('auditor-dept').value.trim() || 'Internal Audit';
+            const phone = document.getElementById('auditor-phone').value.trim() || '-';
+
+            const payload = { action: 'SAVE_AUDITOR', nik, name, email, role, dept, phone };
+
+            // Send to Google Sheets Apps Script if URL provided
+            if (scriptUrl) {
+                try {
+                    await fetch(scriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    showToast(`Data ${name} tersimpan & ter-update di Google Sheet Master_Karyawan!`, 'success');
+                } catch (err) {
+                    console.error("Sheet Sync Error:", err);
+                }
+            }
+
+            if (originalNik) {
+                const index = masterTeam.findIndex(m => m.nik === originalNik);
+                if (index !== -1) masterTeam[index] = { nik, name, email, role, dept, phone };
+            } else {
+                masterTeam.push({ nik, name, email, role, dept, phone });
+            }
+
+            saveBtn.disabled = false;
+            saveBtn.innerText = 'Simpan Data Auditor';
+
+            closeModal('modal-add-auditor');
+            renderMasterTeamTable();
+        }
+
+        async function deleteAuditor(nik) {
+            const auditor = masterTeam.find(m => m.nik === nik);
+            masterTeam = masterTeam.filter(m => m.nik !== nik);
+
+            if (scriptUrl) {
+                try {
+                    await fetch(scriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'DELETE_AUDITOR', nik: nik })
+                    });
+                } catch (err) {
+                    console.error("Delete Error:", err);
+                }
+            }
+
+            renderMasterTeamTable();
+            showToast(`Data auditor ${auditor ? auditor.name : nik} berhasil dihapus.`, 'info');
+        }
+
+        function renderEmailLogs() {
+            const container = document.getElementById('email-log-container');
+            if (!container) return;
+            container.innerHTML = `
+                <div class="p-8 text-center text-slate-400 text-xs">
+                    <i class="fa-solid fa-envelope-open text-3xl mb-2"></i>
+                    <p>Tidak ada log pemicu email H-1 saat ini.</p>
+                </div>
+            `;
+        }
+
+        function renderDriveSyncView() {
+            const container = document.getElementById('drive-project-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (projects.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center text-slate-400 text-xs col-span-2">
+                        <i class="fa-brands fa-google-drive text-3xl mb-2 text-amber-500"></i>
+                        <p>Belum ada folder proyek yang terbuat.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            projects.forEach(p => {
+                let subfoldersHtml = p.driveFolders.map(f => `
+                    <div class="flex items-center justify-between p-2 bg-slate-50 rounded border border-slate-200 text-xs text-slate-700">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-folder text-amber-500 text-sm"></i>
+                            <span class="font-medium">${f}</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400 font-mono">Drive Subfolder</span>
+                    </div>
+                `).join('');
+
+                container.innerHTML += `
+                    <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">[${p.id}] ${p.name}</h4>
+                                <span class="text-xs text-slate-400 font-mono">Drive Folder Name</span>
+                            </div>
+                            <button onclick="openDriveLinkForCurrentProject()" class="text-xs text-brand-600 font-semibold hover:underline">
+                                Buka Drive <i class="fa-solid fa-external-link ml-1"></i>
+                            </button>
+                        </div>
+                        <div class="space-y-1.5">${subfoldersHtml}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function openDriveLinkForCurrentProject() {
+            window.open(GOOGLE_CONFIG.driveRootUrl, '_blank');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function showToast(msg, type = 'info') {
+            const toast = document.getElementById('toast-notification');
+            const messageEl = document.getElementById('toast-message');
+            const iconEl = document.getElementById('toast-icon');
+
+            if (!toast || !messageEl || !iconEl) return;
+            messageEl.innerText = msg;
+
+            if (type === 'success') iconEl.className = "fa-solid fa-circle-check text-emerald-400 text-base";
+            else if (type === 'error') iconEl.className = "fa-solid fa-circle-xmark text-rose-400 text-base";
+            else iconEl.className = "fa-solid fa-circle-info text-sky-400 text-base";
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3500);
+        }
+
+        function initApp() {
+            initScriptUrlInput();
+            renderMasterTeamTable();
+            renderProjectList();
+            updateDashboardKPIs();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+    </script>
+</body>
+</html>
