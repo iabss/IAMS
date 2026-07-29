@@ -75,7 +75,6 @@
             </nav>
         </div>
 
-        <!-- Sidebar Footer Status -->
         <div class="p-4 border-t border-slate-800 text-xs">
             <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700/50 space-y-1.5">
                 <div class="flex items-center justify-between">
@@ -93,7 +92,6 @@
 
     <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50">
         
-        <!-- TOP NAVBAR HEADER -->
         <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 shrink-0 shadow-sm z-10">
             <div class="flex items-center space-x-4">
                 <h2 id="page-title" class="text-xl font-bold text-slate-800 tracking-tight">Dashboard Audit & Proyek</h2>
@@ -110,11 +108,9 @@
             </div>
         </header>
 
-        <!-- VIEW CONTAINER -->
         <div class="flex-1 overflow-y-auto p-6 custom-scrollbar" id="content-container">
 
             <div id="view-dashboard" class="space-y-6">
-                <!-- KPI Stat Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
                         <div>
@@ -154,7 +150,6 @@
                     </div>
                 </div>
 
-                <!-- PROJECT LIST SECTION -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
                         <div>
@@ -166,14 +161,11 @@
                         </div>
                     </div>
 
-                    <div class="divide-y divide-slate-100" id="project-list-container">
-                        <!-- Dynamic project list -->
-                    </div>
+                    <div class="divide-y divide-slate-100" id="project-list-container"></div>
                 </div>
             </div>
 
             <div id="view-project-detail" class="space-y-6 hidden">
-                <!-- Back Header -->
                 <div class="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                     <div class="flex items-center space-x-4">
                         <button onclick="switchTab('dashboard')" class="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 text-xs font-semibold flex items-center space-x-2">
@@ -198,7 +190,6 @@
                     </div>
                 </div>
 
-                <!-- Progress Header Banner -->
                 <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-6">
                     <div class="space-y-1">
                         <span class="text-xs text-slate-400 font-semibold tracking-wider uppercase">Progres Total Pembobotan Audit</span>
@@ -222,9 +213,8 @@
                     </div>
                 </div>
 
-                <!-- 3 PHASE SUBLISTS -->
                 <div class="space-y-4">
-                    <!-- PHASE 1: PRE-PLANNING -->
+                    <!-- PHASE 1 -->
                     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                         <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                             <div class="flex items-center space-x-3">
@@ -252,7 +242,7 @@
                         </div>
                     </div>
 
-                    <!-- PHASE 2: FIELD WORK -->
+                    <!-- PHASE 2 -->
                     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                         <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                             <div class="flex items-center space-x-3">
@@ -280,7 +270,7 @@
                         </div>
                     </div>
 
-                    <!-- PHASE 3: REPORTING -->
+                    <!-- PHASE 3 -->
                     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                         <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                             <div class="flex items-center space-x-3">
@@ -327,7 +317,6 @@
                     </div>
                 </div>
 
-                <!-- Table Auditor -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
@@ -524,7 +513,6 @@
     </div>
 
     <script>
-        // GOOGLE INTEGRATION CONFIGURATION
         const GOOGLE_CONFIG = {
             driveParentFolderId: '1RT3NyrAcsBhj5mBxZmdWy9J6j_ZNVVWU',
             driveRootUrl: 'https://drive.google.com/drive/folders/1RT3NyrAcsBhj5mBxZmdWy9J6j_ZNVVWU',
@@ -532,7 +520,6 @@
             scriptUrl: 'https://script.google.com/macros/s/AKfycbzFDgx2QXrWmwGxmnKDrchBkhfm4VmaRgl1bGE5SubdsDAJ5r7K07ke-oRv4FQnRKcIKg/exec'
         };
 
-        // MASTER ACTIVITIES (22 TASKS & WEIGHTS)
         const MASTER_PHASE_ACTIVITIES = [
             { id: 'act_1', phase: 'Pre-Planning', name: 'Pembuatan & Pengiriman SPA', weight: 5 },
             { id: 'act_2', phase: 'Pre-Planning', name: 'Finalisasi Audit Program', weight: 3 },
@@ -560,7 +547,6 @@
             { id: 'act_22', phase: 'Reporting', name: 'Seluruh Dokumen Audit Disimpan dalam Server Bersama', weight: 2 }
         ];
 
-        // SCOPE OPTIONS
         let JOBSITE_OPTIONS = [
             'Site Adaro - Kalimantan Selatan',
             'Site Tabang - Kalimantan Timur',
@@ -578,7 +564,6 @@
             'Mining Operations & Production'
         ];
 
-        // APP STATE WITH LOCAL STORAGE PERSISTENCE
         let projects = JSON.parse(localStorage.getItem('ams_projects') || '[]');
         let masterTeam = JSON.parse(localStorage.getItem('ams_master_team') || '[]');
         let emailLogs = [];
@@ -586,14 +571,16 @@
 
         async function fetchDataFromSpreadsheet() {
             const btn = document.getElementById('btn-refresh-data');
+            const statusBadge = document.getElementById('script-status-badge');
+
             if (btn) btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-xs"></i><span>Syncing...</span>`;
 
             try {
-                const res = await fetch(GOOGLE_CONFIG.scriptUrl);
+                // Fetch using GET request with action=getData
+                const res = await fetch(`${GOOGLE_CONFIG.scriptUrl}?action=getData`);
                 const data = await res.json();
 
                 if (data.status === 'success') {
-                    // Parse Master Karyawan
                     if (data.karyawan && data.karyawan.length > 1) {
                         masterTeam = data.karyawan.slice(1).filter(r => r[0]).map(r => ({
                             nik: String(r[0]),
@@ -606,7 +593,6 @@
                         localStorage.setItem('ams_master_team', JSON.stringify(masterTeam));
                     }
 
-                    // Parse Scope Options from Master_sitedept
                     if (data.sitedept && data.sitedept.length > 1) {
                         const jobs = [];
                         const depts = [];
@@ -618,7 +604,6 @@
                         if (depts.length > 0) DEPARTMENT_OPTIONS = depts;
                     }
 
-                    // Parse Projects from Database_project
                     if (data.projects && data.projects.length > 1) {
                         const parsedProjects = [];
                         data.projects.slice(1).forEach(r => {
@@ -669,10 +654,19 @@
                         localStorage.setItem('ams_projects', JSON.stringify(projects));
                     }
 
+                    if (statusBadge) {
+                        statusBadge.className = "inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                        statusBadge.innerText = "Connected";
+                    }
+
                     showToast('Berhasil sinkronisasi data dari Google Spreadsheet!', 'success');
                 }
             } catch (err) {
                 console.warn("Spreadsheet Sync Warning:", err);
+                if (statusBadge) {
+                    statusBadge.className = "inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20";
+                    statusBadge.innerText = "Offline Cache Mode";
+                }
                 showToast('Memuat data dari Cache Terimpan', 'info');
             } finally {
                 if (btn) btn.innerHTML = `<i class="fa-solid fa-rotate text-xs"></i><span>Sync / Refresh Data</span>`;
@@ -848,7 +842,7 @@
             });
         }
 
-        function updateTaskStatus(projId, taskId, newStatus) {
+        async function updateTaskStatus(projId, taskId, newStatus) {
             const proj = projects.find(p => p.id === projId);
             if (!proj) return;
             const task = proj.tasks.find(t => t.id === taskId);
@@ -858,17 +852,19 @@
             localStorage.setItem('ams_projects', JSON.stringify(projects));
             renderProjectWorkspace(projId);
 
-            fetch(GOOGLE_CONFIG.scriptUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: 'UPDATE_TASK_STATUS',
-                    auditId: projId,
-                    taskId: taskId,
-                    newStatus: newStatus
-                })
-            }).catch(err => console.error("Update task err:", err));
+            try {
+                await fetch(GOOGLE_CONFIG.scriptUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'UPDATE_TASK_STATUS',
+                        auditId: projId,
+                        taskId: taskId,
+                        newStatus: newStatus
+                    })
+                });
+            } catch (err) {
+                console.error("Update task err:", err);
+            }
 
             showToast(`Status task "${task.name}" diperbarui ke ${newStatus}`, 'success');
         }
@@ -954,29 +950,29 @@
                 status: 'Open'
             }));
 
+            const payload = {
+                action: 'CREATE_PROJECT_DRIVE',
+                id: auditId,
+                name: auditName,
+                type: auditType,
+                objective: auditObjective,
+                scopeType: scopeType,
+                scopeValue: scopeValue,
+                startDate: startDate,
+                finishDate: finishDate,
+                leadPicNik: leadPicNik,
+                memberNiks: memberNiks,
+                tasks: newTasks
+            };
+
             try {
                 await fetch(GOOGLE_CONFIG.scriptUrl, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'CREATE_PROJECT_DRIVE',
-                        id: auditId,
-                        name: auditName,
-                        type: auditType,
-                        objective: auditObjective,
-                        scopeType: scopeType,
-                        scopeValue: scopeValue,
-                        startDate: startDate,
-                        finishDate: finishDate,
-                        leadPicNik: leadPicNik,
-                        memberNiks: memberNiks,
-                        tasks: newTasks
-                    })
+                    body: JSON.stringify(payload)
                 });
-                showToast(`Proyek [${auditId}] & Folder Drive berhasil dibuat!`, 'success');
+                showToast(`Proyek [${auditId}] & Folder Drive berhasil dikirim!`, 'success');
             } catch (err) {
-                console.error("Drive Error:", err);
+                console.error("Drive/Sheet Error:", err);
             }
 
             const newProj = {
@@ -1004,6 +1000,9 @@
             renderProjectList();
             renderDriveSyncView();
             openProjectDetail(auditId);
+            
+            // Reload fresh data from Spreadsheet
+            setTimeout(fetchDataFromSpreadsheet, 1500);
         }
 
         function renderMasterTeamTable() {
@@ -1088,8 +1087,6 @@
             try {
                 await fetch(GOOGLE_CONFIG.scriptUrl, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 showToast(`Data ${name} tersimpan di Google Sheet Master_Karyawan!`, 'success');
@@ -1110,6 +1107,7 @@
 
             closeModal('modal-add-auditor');
             renderMasterTeamTable();
+            setTimeout(fetchDataFromSpreadsheet, 1500);
         }
 
         async function deleteAuditor(nik) {
@@ -1120,8 +1118,6 @@
             try {
                 await fetch(GOOGLE_CONFIG.scriptUrl, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'DELETE_AUDITOR', nik: nik })
                 });
             } catch (err) {
@@ -1130,6 +1126,7 @@
 
             renderMasterTeamTable();
             showToast(`Data auditor ${auditor ? auditor.name : nik} berhasil dihapus.`, 'info');
+            setTimeout(fetchDataFromSpreadsheet, 1500);
         }
 
         function renderEmailLogs() {
