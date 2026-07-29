@@ -855,6 +855,9 @@
             try {
                 await fetch(GOOGLE_CONFIG.scriptUrl, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
                     body: JSON.stringify({
                         action: 'UPDATE_TASK_STATUS',
                         auditId: projId,
@@ -968,6 +971,9 @@
             try {
                 await fetch(GOOGLE_CONFIG.scriptUrl, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
                     body: JSON.stringify(payload)
                 });
                 showToast(`Proyek [${auditId}] & Folder Drive berhasil dikirim!`, 'success');
@@ -1087,6 +1093,9 @@
             try {
                 await fetch(GOOGLE_CONFIG.scriptUrl, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
                     body: JSON.stringify(payload)
                 });
                 showToast(`Data ${name} tersimpan di Google Sheet Master_Karyawan!`, 'success');
@@ -1118,6 +1127,9 @@
             try {
                 await fetch(GOOGLE_CONFIG.scriptUrl, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
                     body: JSON.stringify({ action: 'DELETE_AUDITOR', nik: nik })
                 });
             } catch (err) {
